@@ -1,0 +1,73 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Lensight — Desktop Companion</title>
+    <style>
+      body { font: 14px system-ui, sans-serif; margin: 24px; color: #1a1a1a; }
+      .row { margin-bottom: 12px; }
+      .ok { color: #16794a; }
+      .bad { color: #a3260b; }
+      button { padding: 6px 12px; }
+      #files { font-size: 12px; white-space: pre-wrap; }
+    </style>
+  </head>
+  <body>
+    <h2>Lensight — Desktop Companion</h2>
+    <p>
+      Optional local helper. The browser extension works fully without this
+      window open — see <code>desktop-companion/README.md</code>.
+    </p>
+
+    <div class="row">
+      Local API: <code>http://127.0.0.1:47291/health</code>
+      <span id="status">checking…</span>
+    </div>
+
+    <div class="row">
+      <button id="refresh">Re-check status</button>
+      <button id="pick">Pick file (native dialog)</button>
+    </div>
+
+    <div id="files"></div>
+
+    <script type="module">
+      // Uses the Tauri invoke bridge when running inside the Tauri shell;
+      // falls back to nothing meaningful if opened as a plain file (this
+      // page is not meant to be loaded outside the Tauri webview).
+      const invoke = window.__TAURI__?.core?.invoke;
+
+      async function refreshStatus() {
+        const el = document.getElementById('status');
+        try {
+          const res = await fetch('http://127.0.0.1:47291/health');
+          const json = await res.json();
+          el.textContent = json.ollama.status === 'reachable'
+            ? 'companion up, Ollama reachable'
+            : `companion up, Ollama: ${json.ollama.status}`;
+          el.className = json.ollama.status === 'reachable' ? 'ok' : 'bad';
+        } catch (e) {
+          el.textContent = 'companion HTTP API not reachable: ' + e;
+          el.className = 'bad';
+        }
+      }
+
+      document.getElementById('refresh').addEventListener('click', refreshStatus);
+      document.getElementById('pick').addEventListener('click', async () => {
+        const out = document.getElementById('files');
+        if (!invoke) {
+          out.textContent = 'Not running inside the Tauri shell — invoke() unavailable.';
+          return;
+        }
+        try {
+          const files = await invoke('pick_files');
+          out.textContent = JSON.stringify(files, null, 2);
+        } catch (e) {
+          out.textContent = 'pick_files failed: ' + e;
+        }
+      });
+
+      refreshStatus();
+    </script>
+  </body>
+</html>

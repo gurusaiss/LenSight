@@ -1,0 +1,383 @@
+<title>Lensight Pitch</title>
+<style>
+  /* Layout: slim numbered rail (desktop) + single readable column, like a diligence memo, not a slide deck */
+  :root{
+    /* dark-first: product ships dark by default, pitch leads with its own aesthetic */
+    --bg:#0c121c; --bg-raised:#121a27; --surface:#161f2e; --border:#263348;
+    --fg:#eef2f7; --muted:#8fa0b8; --faint:#5c6c84;
+    --accent:#6fc9bd; --accent-soft:#1c3a38; --accent-strong:#9adfd4;
+    --warn:#d9a86c; --warn-soft:#3a2e1c;
+    --built:#6fc9bd; --exp:#d9a86c; --road:#5c6c84;
+    color-scheme:dark;
+  }
+  @media (prefers-color-scheme: light){
+    :root:not([data-theme="dark"]){
+      --bg:#f7f5f0; --bg-raised:#ffffff; --surface:#ffffff; --border:#e2ded3;
+      --fg:#1c2230; --muted:#5b6475; --faint:#8a92a3;
+      --accent:#1f8f80; --accent-soft:#dff2ee; --accent-strong:#136b60;
+      --warn:#9a6a2c; --warn-soft:#f6ecdb;
+      --built:#1f8f80; --exp:#9a6a2c; --road:#8a92a3;
+      color-scheme:light;
+    }
+  }
+  :root[data-theme="light"]{
+    --bg:#f7f5f0; --bg-raised:#ffffff; --surface:#ffffff; --border:#e2ded3;
+    --fg:#1c2230; --muted:#5b6475; --faint:#8a92a3;
+    --accent:#1f8f80; --accent-soft:#dff2ee; --accent-strong:#136b60;
+    --warn:#9a6a2c; --warn-soft:#f6ecdb;
+    --built:#1f8f80; --exp:#9a6a2c; --road:#8a92a3;
+    color-scheme:light;
+  }
+
+  *{box-sizing:border-box}
+  body{
+    background:var(--bg); color:var(--fg);
+    font-family:"Public Sans", -apple-system, "Segoe UI", sans-serif;
+    font-size:16px; line-height:1.6; padding-left:max(16px, env(safe-area-inset-left,0px));
+    padding-right:max(16px, env(safe-area-inset-right,0px));
+  }
+  h1,h2,h3{font-family:"Newsreader", Georgia, "Times New Roman", serif; font-weight:600; text-wrap:balance; letter-spacing:-0.01em}
+  .mono{font-family:"JetBrains Mono", ui-monospace, Menlo, monospace}
+  a{color:var(--accent)}
+  table{border-collapse:collapse; width:100%}
+
+  .shell{max-width:1180px; margin:0 auto; display:grid; grid-template-columns:200px minmax(0,1fr); gap:56px; padding-block:48px}
+  @media (max-width:860px){ .shell{grid-template-columns:1fr; gap:8px} }
+
+  /* --- rail --- */
+  .rail{position:sticky; top:max(24px, env(safe-area-inset-top,0px)); align-self:start; display:flex; flex-direction:column; gap:2px}
+  @media (max-width:860px){ .rail{position:static; flex-direction:row; flex-wrap:wrap; gap:6px 14px; padding-bottom:20px; border-bottom:1px solid var(--border); margin-bottom:20px} }
+  .rail a{color:var(--faint); text-decoration:none; font-size:13px; padding:5px 0; border-left:2px solid transparent; padding-left:12px; transition:color .15s, border-color .15s}
+  .rail a:hover{color:var(--fg)}
+  .rail a.active{color:var(--accent); border-left-color:var(--accent)}
+  @media (max-width:860px){ .rail a{border-left:none; padding-left:0; border-bottom:2px solid transparent} .rail a.active{border-bottom-color:var(--accent)} }
+  .rail .brand{font-family:"Newsreader",serif; font-size:19px; color:var(--fg); margin-bottom:18px; padding-left:12px}
+  @media (max-width:860px){ .rail .brand{padding-left:0; width:100%; margin-bottom:10px} }
+
+  main{min-width:0}
+  section{padding-block:40px; border-bottom:1px solid var(--border)}
+  section:first-of-type{padding-top:0}
+  section:last-of-type{border-bottom:none}
+  .eyebrow{font-family:"JetBrains Mono",monospace; font-size:12px; letter-spacing:.08em; text-transform:uppercase; color:var(--accent); margin-bottom:10px}
+  .lede{font-size:19px; color:var(--muted); max-width:62ch; margin-top:14px}
+  p{max-width:68ch; color:var(--muted)}
+  h2{font-size:28px; margin:0}
+  .num{font-family:"JetBrains Mono",monospace; color:var(--faint); font-size:13px; margin-right:10px}
+
+  /* hero */
+  .hero h1{font-size:clamp(34px,5vw,54px); margin:0 0 18px}
+  .hero-tag{font-size:21px; color:var(--fg); max-width:48ch; margin:0 0 22px; font-family:"Newsreader",serif; font-weight:400}
+  .stage{display:inline-flex; gap:8px; align-items:center; font-family:"JetBrains Mono",monospace; font-size:12px; color:var(--muted); background:var(--surface); border:1px solid var(--border); padding:6px 12px; border-radius:100px}
+  .stage::before{content:""; width:7px; height:7px; border-radius:50%; background:var(--accent)}
+
+  /* pills / status */
+  .pill{display:inline-block; font-family:"JetBrains Mono",monospace; font-size:11px; letter-spacing:.03em; padding:3px 9px; border-radius:5px; white-space:nowrap}
+  .pill-built{background:var(--accent-soft); color:var(--built)}
+  .pill-exp{background:var(--warn-soft); color:var(--exp)}
+  .pill-road{background:var(--surface); color:var(--road); border:1px solid var(--border)}
+
+  /* status strip */
+  .statusgrid{display:grid; grid-template-columns:repeat(3,1fr); gap:1px; background:var(--border); border:1px solid var(--border); border-radius:10px; overflow:hidden; margin-top:24px}
+  @media (max-width:640px){ .statusgrid{grid-template-columns:1fr} }
+  .statuscell{background:var(--surface); padding:18px}
+  .statuscell h4{margin:0 0 10px; font-size:13px}
+  .statuscell ul{margin:0; padding-left:18px; color:var(--muted); font-size:14px; line-height:1.7}
+
+  /* flow diagram */
+  .flow{display:flex; align-items:stretch; gap:0; margin-top:28px; flex-wrap:wrap}
+  .flow-step{flex:1 1 150px; background:var(--surface); border:1px solid var(--border); border-radius:10px; padding:16px; position:relative; min-width:0}
+  .flow-step .fn{font-family:"JetBrains Mono",monospace; color:var(--faint); font-size:12px}
+  .flow-step h5{margin:6px 0 4px; font-size:14px}
+  .flow-step p{font-size:13px; margin:0; max-width:none}
+  .flow-arrow{display:flex; align-items:center; justify-content:center; flex:0 0 28px; color:var(--faint)}
+  @media (max-width:760px){ .flow{flex-direction:column} .flow-arrow{transform:rotate(90deg); flex:0 0 20px} }
+  .boundary{border:1px dashed var(--accent); border-radius:12px; padding:16px; margin-top:14px; background:var(--accent-soft)}
+  .boundary .label{font-family:"JetBrains Mono",monospace; font-size:11px; color:var(--built); text-transform:uppercase; letter-spacing:.06em; margin-bottom:8px}
+
+  /* tables */
+  .tbl{margin-top:22px; font-size:14px; border:1px solid var(--border); border-radius:10px; overflow:hidden}
+  .tbl th,.tbl td{padding:11px 14px; border-bottom:1px solid var(--border); text-align:left; vertical-align:top}
+  .tbl th{background:var(--surface); font-family:"JetBrains Mono",monospace; font-weight:500; font-size:12px; letter-spacing:.02em; color:var(--muted)}
+  .tbl tr:last-child td{border-bottom:none}
+  .tbl td.yes{color:var(--accent); font-weight:600}
+  .tbl .us td{background:var(--accent-soft)}
+  .tbl-scroll{overflow-x:auto}
+
+  /* big numbers */
+  .stats{display:grid; grid-template-columns:repeat(4,1fr); gap:1px; background:var(--border); border:1px solid var(--border); border-radius:10px; overflow:hidden; margin-top:26px}
+  @media (max-width:640px){ .stats{grid-template-columns:repeat(2,1fr)} }
+  .stat{background:var(--surface); padding:20px 16px}
+  .stat b{display:block; font-family:"JetBrains Mono",monospace; font-size:28px; font-variant-numeric:tabular-nums; color:var(--accent)}
+  .stat span{font-size:12.5px; color:var(--muted); display:block; margin-top:6px}
+  .honest{border-left:2px solid var(--warn); padding:12px 16px; background:var(--warn-soft); border-radius:0 8px 8px 0; margin-top:18px; font-size:14px; color:var(--fg)}
+  .honest b{color:var(--exp)}
+
+  /* roadmap timeline */
+  .tl{margin-top:26px; display:flex; flex-direction:column}
+  .tl-item{display:grid; grid-template-columns:28px 1fr; gap:14px; padding-bottom:22px; position:relative}
+  .tl-item:last-child{padding-bottom:0}
+  .tl-dot{width:10px; height:10px; border-radius:50%; background:var(--accent); margin-top:6px; position:relative; z-index:1}
+  .tl-item:not(:last-child)::before{content:""; position:absolute; left:4px; top:18px; bottom:0; width:1px; background:var(--border)}
+  .tl-item h5{margin:0 0 4px; font-size:15px}
+  .tl-item p{font-size:14px; margin:0}
+
+  .ph{border:1px dashed var(--faint); border-radius:8px; padding:12px 14px; color:var(--faint); font-size:13.5px; font-family:"JetBrains Mono",monospace; margin-top:10px}
+
+  details{margin-top:18px; border:1px solid var(--border); border-radius:10px; background:var(--surface)}
+  summary{cursor:pointer; padding:14px 16px; font-size:14px; color:var(--fg); font-family:"JetBrains Mono",monospace}
+  details[open] summary{border-bottom:1px solid var(--border)}
+  details .inner{padding:4px 16px 16px}
+
+  .closing{font-family:"Newsreader",serif; font-size:22px; line-height:1.55; color:var(--fg); max-width:56ch}
+
+  footer{padding-top:28px; color:var(--faint); font-size:13px; display:flex; justify-content:space-between; flex-wrap:wrap; gap:10px}
+
+  .copybtn{font-family:"JetBrains Mono",monospace; font-size:12px; background:var(--surface); border:1px solid var(--border); color:var(--muted); padding:7px 12px; border-radius:7px; cursor:pointer}
+  .copybtn:hover{color:var(--fg); border-color:var(--accent)}
+  .copybtn:focus-visible, a:focus-visible, summary:focus-visible{outline:2px solid var(--accent); outline-offset:2px}
+
+  @media (prefers-reduced-motion: no-preference){
+    section{animation:rise .5s ease-out both}
+  }
+  @keyframes rise{from{opacity:0; transform:translateY(6px)} to{opacity:1; transform:none}}
+</style>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:ital,wght@0,400;0,600;1,400&family=Public+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap">
+
+<div class="shell">
+  <nav class="rail" id="rail">
+    <div class="brand">Lensight</div>
+    <a href="#problem">01 — Problem</a>
+    <a href="#solution">02 — Solution</a>
+    <a href="#why-now">03 — Why now</a>
+    <a href="#how">04 — How it works</a>
+    <a href="#market">05 — Market</a>
+    <a href="#model">06 — Business model</a>
+    <a href="#traction">07 — Traction</a>
+    <a href="#roadmap">08 — Roadmap</a>
+    <a href="#ask">09 — Team &amp; ask</a>
+    <a href="#risks">10 — Risks</a>
+  </nav>
+
+  <main>
+    <section class="hero">
+      <span class="stage">Pre-seed · pre-launch · 2026-10-05</span>
+      <h1>The private AI layer for your browser.</h1>
+      <p class="hero-tag">Lensight lets you ask questions about whatever you're looking at — a page, a PDF, a selection — with your content indexed on your own device and sent to no one unless you choose to.</p>
+    </section>
+
+    <section id="problem">
+      <div class="eyebrow">01 — Problem</div>
+      <h2>Copy-paste is the real AI workflow today, and it's a bad one.</h2>
+      <p class="lede">Every mainstream AI browser assistant asks you to trust its cloud with whatever you're reading — including the content you most want to keep private.</p>
+      <div class="statusgrid">
+        <div class="statuscell">
+          <h4>The workflow is broken</h4>
+          <p>Select text, open a chatbot tab, paste, ask, repeat for every new page. It loses headings, timestamps, who-said-what — and has to happen again and again.</p>
+        </div>
+        <div class="statuscell">
+          <h4>Every assistant is cloud-first</h4>
+          <p>ChatGPT's browsing, Perplexity's Comet, Copilot in Edge, Arc — all send page content to a cloud model. Gemini in Chrome does a few tasks on-device, but it's closed and not configurable.</p>
+        </div>
+        <div class="statuscell">
+          <h4>Private content is what you want to ask about</h4>
+          <p>Messages, internal docs, dashboards — exactly what you should hesitate to paste into a consumer chatbot. Today you choose between convenience and privacy.</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="solution">
+      <div class="eyebrow">02 — Solution</div>
+      <h2>Index it locally. Ask it anything. Choose where the answer comes from.</h2>
+      <p class="lede">A Chrome extension that captures a page, selection, PDF, or file; indexes it on-device; answers with citations; and only leaves your machine if you explicitly pick a remote model.</p>
+      <table class="tbl">
+        <tr><th>Built &amp; tested</th><th>Experimental</th><th>Roadmap</th></tr>
+        <tr>
+          <td><span class="pill pill-built">shipping</span><br><br>Web page &amp; selection capture · PDF &amp; file import · local RAG pipeline with citations · research sessions · Mode A &amp; B · Gemini / OpenAI-compatible / Ollama providers · prompt-injection defense · command palette, onboarding, diagnostics, dark mode</td>
+          <td><span class="pill pill-exp">fixture-tested</span><br><br>WhatsApp Web capture · desktop companion GUI</td>
+          <td><span class="pill pill-road">planned</span><br><br>Gmail, Docs, LinkedIn, YouTube adapters · .docx · OCR · companion integration · Free / Pro / Team tiers</td>
+        </tr>
+      </table>
+    </section>
+
+    <section id="why-now">
+      <div class="eyebrow">03 — Why now</div>
+      <h2>The category is forming, and no one owns local-first.</h2>
+      <div class="tl">
+        <div class="tl-item"><div class="tl-dot"></div><div><h5>AI browser assistants are going mainstream</h5><p>Copilot in Edge, Gemini in Chrome, Perplexity's own browser — users are learning to expect "ask about this page."</p></div></div>
+        <div class="tl-item"><div class="tl-dot"></div><div><h5>Every one of them is tied to a vendor's cloud</h5><p>Most are tied to a vendor's browser too. None is local-first, privacy-first, and provider-agnostic at once — that's an open gap, not an incremental one.</p></div></div>
+        <div class="tl-item"><div class="tl-dot"></div><div><h5>Local AI has become practical</h5><p>On-device embeddings run in-browser via WebAssembly; local LLM runtimes like Ollama run capable models on a user's own machine. Lensight uses both today without needing to train its own model.</p></div></div>
+        <div class="tl-item"><div class="tl-dot"></div><div><h5>Privacy expectations are rising</h5><p>Manifest V3 and store policy push extensions toward least privilege. Lensight requests <span class="mono">activeTab</span>, not every site; runs no remote code; collects no telemetry.</p></div></div>
+      </div>
+    </section>
+
+    <section id="how">
+      <div class="eyebrow">04 — How it works</div>
+      <h2>Open a page. Ask. Get a cited answer. Content stays put.</h2>
+      <div class="flow">
+        <div class="flow-step"><div class="fn">01</div><h5>Capture</h5><p>Click the toolbar icon — grants one-time access to this tab only.</p></div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-step"><div class="fn">02</div><h5>Index</h5><p>Page is cleaned, chunked, embedded, stored — all on-device.</p></div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-step"><div class="fn">03</div><h5>Retrieve</h5><p>Your question matches the relevant excerpts, locally.</p></div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-step"><div class="fn">04</div><h5>Answer</h5><p>Cited response. Click a citation, jump to the source.</p></div>
+      </div>
+      <div class="boundary">
+        <div class="label">On-device boundary</div>
+        <p style="margin:0; max-width:none; color:var(--fg)">Steps 01–03 never leave the machine, in every mode. Only in Mode B does a question cross the boundary — and then only the few retrieved excerpts and the question itself, to a provider you picked, using your own key. Never the full page. Never other tabs. Never history.</p>
+      </div>
+    </section>
+
+    <section id="market">
+      <div class="eyebrow">05 — Market &amp; competition</div>
+      <h2>The platforms have reach. The open-source tools have privacy. Nobody has both.</h2>
+      <div class="tbl-scroll">
+      <table class="tbl">
+        <tr><th></th><th>Local-first default</th><th>Provider choice</th><th>Works in your browser</th><th>Honest capability levels</th><th>Citations</th></tr>
+        <tr class="us"><td><b>Lensight</b></td><td class="yes">Yes</td><td class="yes">Yes</td><td class="yes">Yes (Chrome)</td><td class="yes">Yes, L1–L7</td><td class="yes">Yes</td></tr>
+        <tr><td>ChatGPT browser</td><td>No</td><td>No</td><td>Web + apps</td><td>No</td><td>Varies</td></tr>
+        <tr><td>Perplexity Comet</td><td>No</td><td>No</td><td>No — own browser</td><td>No</td><td>Search-grounded</td></tr>
+        <tr><td>Copilot in Edge</td><td>No</td><td>No</td><td>Edge only</td><td>No</td><td>—</td></tr>
+        <tr><td>Gemini in Chrome</td><td>Partial (Nano)</td><td>No</td><td>Chrome only</td><td>No</td><td>—</td></tr>
+        <tr><td>OSS Ollama + browser</td><td>If configured</td><td>Local only</td><td>Yes</td><td>No</td><td>Usually not</td></tr>
+      </table>
+      </div>
+      <p style="margin-top:18px">Lensight's moat is privacy, honesty about limitations, and an adapter architecture that makes new sources cheap to add — not model quality. It trains no models.</p>
+      <div class="ph">[fill in: market sizing — browser-extension users / knowledge workers / privacy-conscious professionals, with sources]</div>
+    </section>
+
+    <section id="model">
+      <div class="eyebrow">06 — Business model</div>
+      <h2>Designed for tiers. Not yet built. No revenue today.</h2>
+      <p class="lede">The provider abstraction and the Session/Source data model already support usage limits — tiers are meant to be configuration, not a rewrite.</p>
+      <table class="tbl">
+        <tr><th>Tier</th><th>Intended offer</th></tr>
+        <tr><td><b>Free</b></td><td>Fully local mode and basic remote-provider use, fair-use capped. Bring-your-own-key is always unlimited.</td></tr>
+        <tr><td><b>Pro</b></td><td>Larger local knowledge base, advanced automations, multi-tab intelligence, a bundled maintained provider.</td></tr>
+        <tr><td><b>Team</b></td><td>Shared sessions and knowledge, opt-in sharing, enterprise-style controls.</td></tr>
+      </table>
+      <p style="margin-top:16px">Cost today is near zero — free/open tooling, no backend, users pay their own provider or nothing in local mode. Bundled-provider and team tiers introduce hosting and inference cost that needs modeling before launch.</p>
+    </section>
+
+    <section id="traction">
+      <div class="eyebrow">07 — Traction</div>
+      <h2>No users yet. Unusually rigorous engineering instead.</h2>
+      <p class="lede">Pre-launch, honestly: no users, no revenue, no store listing. Built by one technical founder with AI-assisted engineering. What exists instead is a record of finding and fixing its own privacy and security bugs before anyone else could.</p>
+      <div class="stats">
+        <div class="stat"><b>224</b><span>passing extension tests, 26 files</span></div>
+        <div class="stat"><b>52 → 44</b><span>real issues found → fixed at root cause</span></div>
+        <div class="stat"><b>9 → 0</b><span>critical/high production dependency advisories</span></div>
+        <div class="stat"><b>12 → 0</b><span>accessibility violations, light &amp; dark</span></div>
+      </div>
+      <p style="margin-top:18px">Findings included: files silently indexed as <span class="mono">[object Object]</span> on Chrome · a path where "fully local" mode could leak to a remote URL · a source-scope filter that quietly searched everything · prompt-injection escapes via Unicode and homoglyph tricks, now covered by 19 adversarial tests · a manifest permission that contradicted the privacy docs.</p>
+      <div class="honest"><b>The point for investors —</b> the hardest part of a privacy product is being trustworthy. Finding and fixing privacy bugs before launch, not after a breach, is the evidence.</div>
+    </section>
+
+    <section id="roadmap">
+      <div class="eyebrow">08 — Roadmap</div>
+      <h2>From launch-ready to local AI, in five stages.</h2>
+      <div class="tl">
+        <div class="tl-item"><div class="tl-dot"></div><div><h5>Launch</h5><p>Manual browser verification, hosted privacy policy, Chrome Web Store listing, real-network validation of local &amp; remote providers.</p></div></div>
+        <div class="tl-item"><div class="tl-dot"></div><div><h5>Source breadth</h5><p>Hardened WhatsApp Web adapter; Gmail, Docs, LinkedIn, YouTube transcripts; .docx; OCR for scanned PDFs.</p></div></div>
+        <div class="tl-item"><div class="tl-dot"></div><div><h5>Local AI depth</h5><p>Connect the extension to the desktop companion; ship the companion app; native-app integration.</p></div></div>
+        <div class="tl-item"><div class="tl-dot"></div><div><h5>Scale</h5><p>Faster search for large local libraries, reranking, per-source provider choice.</p></div></div>
+        <div class="tl-item"><div class="tl-dot"></div><div><h5>Monetization</h5><p>Pro and Team tiers, on the architecture already built for them.</p></div></div>
+      </div>
+      <div class="ph">[fill in: timeline and milestones tied to the raise]</div>
+    </section>
+
+    <section id="ask">
+      <div class="eyebrow">09 — Team &amp; the ask</div>
+      <h2>Team</h2>
+      <div class="ph">[founder background]</div>
+      <div class="ph" style="margin-top:10px">[fill in: advisors, planned hires]</div>
+      <h2 style="margin-top:36px">The ask</h2>
+      <div class="ph">[fill in: raise amount / use of funds]</div>
+      <p style="margin-top:14px">Suggested use-of-funds structure: launch &amp; distribution, source-adapter breadth, desktop companion, early go-to-market.</p>
+      <div class="ph">[fill in: percentages]</div>
+    </section>
+
+    <section id="risks">
+      <div class="eyebrow">10 — Risks, stated plainly</div>
+      <h2>What could go wrong, and what's already done about it.</h2>
+      <details>
+        <summary>WhatsApp Web Terms of Service</summary>
+        <div class="inner"><p>WhatsApp's terms prohibit automated or bulk access, and its DOM changes without notice. <b style="color:var(--fg)">Mitigation:</b> one experimental adapter, not the flagship — user-triggered, one conversation at a time, on-screen content only, disclosed to users.</p></div>
+      </details>
+      <details>
+        <summary>Free AI provider tiers may change</summary>
+        <div class="inner"><p>Mode B convenience depends on providers' free tiers and terms. <b style="color:var(--fg)">Mitigation:</b> any OpenAI-compatible endpoint works, users can bring their own key, and fully local mode needs no provider at all.</p></div>
+      </details>
+      <details>
+        <summary>Chrome Web Store review</summary>
+        <div class="inner"><p>Extensions reading page content, shipping WASM, and calling AI APIs get scrutiny. <b style="color:var(--fg)">Mitigation:</b> least-privilege manifest, no remote code, no eval, zero production advisories, a written privacy policy. Still unproven until submitted.</p></div>
+      </details>
+      <details>
+        <summary>"Local-first" is a harder sell</summary>
+        <div class="inner"><p>"Just use our cloud AI" is simpler to explain. Zero-setup local mode returns ranked excerpts, not fluent prose; real local generation needs Ollama installed. <b style="color:var(--fg)">Mitigation:</b> lead with technical and privacy-sensitive users; the desktop companion is the intended path to simpler local AI.</p></div>
+      </details>
+      <details>
+        <summary>Platform competition</summary>
+        <div class="inner"><p>Google, Microsoft and others could add a local mode. <b style="color:var(--fg)">Mitigation:</b> their incentive is their own cloud and browser — Lensight is cross-provider and privacy-built from the start.</p></div>
+      </details>
+      <details>
+        <summary>Unverified pieces</summary>
+        <div class="inner"><p>Real-model embedding quality, live Ollama/remote-API calls, the live WhatsApp adapter, and the desktop GUI haven't been exercised end to end yet. Documented explicitly, and first on the launch checklist.</p></div>
+      </details>
+      <details>
+        <summary>Single-founder execution</summary>
+        <div class="inner"><p>Bus factor and bandwidth.</p><div class="ph">[fill in: hiring plan]</div></div>
+      </details>
+    </section>
+
+    <section id="closing" style="border-bottom:none">
+      <div class="eyebrow">Closing</div>
+      <p class="closing">Everyone is putting AI into the browser. Lensight is built to be the one users can trust with their private content — local by default, open to any model, honest about what it can and cannot read. The engineering record is the evidence.</p>
+    </section>
+
+    <footer>
+      <span>Lensight — pre-seed deck draft, 2026-10-05</span>
+      <button class="copybtn" id="copyLink">Copy page link</button>
+    </footer>
+  </main>
+</div>
+
+<script>
+(function(){
+  try{
+    var links = Array.prototype.slice.call(document.querySelectorAll('.rail a'));
+    var sections = links.map(function(a){ return document.querySelector(a.getAttribute('href')); }).filter(Boolean);
+    function onScroll(){
+      var y = window.scrollY + 140;
+      var active = 0;
+      for(var i=0;i<sections.length;i++){ if(sections[i] && sections[i].offsetTop <= y) active = i; }
+      links.forEach(function(a,i){ a.classList.toggle('active', i===active); });
+    }
+    document.addEventListener('scroll', onScroll, {passive:true});
+    onScroll();
+  }catch(e){}
+
+  var btn = document.getElementById('copyLink');
+  if(btn){
+    btn.addEventListener('click', function(){
+      var text = location.href;
+      function fallback(){
+        try{
+          var ta = document.createElement('textarea');
+          ta.value = text; ta.style.position='fixed'; ta.style.opacity='0';
+          document.body.appendChild(ta); ta.focus(); ta.select();
+          document.execCommand('copy'); document.body.removeChild(ta);
+          btn.textContent = 'Copied';
+        }catch(e){ btn.textContent = 'Copy failed'; }
+        setTimeout(function(){ btn.textContent='Copy page link'; }, 1600);
+      }
+      if(navigator.clipboard && navigator.clipboard.writeText){
+        navigator.clipboard.writeText(text).then(function(){
+          btn.textContent = 'Copied';
+          setTimeout(function(){ btn.textContent='Copy page link'; }, 1600);
+        }).catch(fallback);
+      } else { fallback(); }
+    });
+  }
+})();
+</script>

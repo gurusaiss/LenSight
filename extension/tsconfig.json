@@ -1,0 +1,23 @@
+{
+  "extends": "./.wxt/tsconfig.json",
+  "compilerOptions": {
+    "strict": true,
+    "jsx": "react-jsx",
+    "target": "ES2022",
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "skipLibCheck": true,
+    "esModuleInterop": true,
+    "resolveJsonModule": true,
+    "types": ["chrome"],
+    // wxt 0.21 (DEP-01 dev-tool upgrade) turned these on in the generated
+    // .wxt/tsconfig.json this file extends. They were off under wxt 0.19 and
+    // are opt-in strictness, not type changes from the upgrade. Adopting them
+    // (55 call sites) is a separate code-quality change, so the project's
+    // previous compiler settings are kept explicitly here.
+    "noUncheckedIndexedAccess": false,
+    "noImplicitOverride": false,
+    "verbatimModuleSyntax": false
+  },
+  "include": ["src", "entrypoints", "tests", ".wxt/wxt.d.ts"]
+}

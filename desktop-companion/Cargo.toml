@@ -1,0 +1,20 @@
+[workspace]
+resolver = "2"
+members = ["core", "src-tauri"]
+# Plain `cargo check`/`cargo test`/`cargo build` at the workspace root only
+# touch `core` by default — the one crate proven to compile and test in
+# this sandbox. `src-tauri` is still a real workspace member (so it shares
+# the lockfile/dependency resolution and IS checked with an explicit
+# `cargo check -p lensight-companion` — see README.md's "Build
+# status in this environment" for that command's real output), it's just
+# not part of the default, no-args invocation.
+default-members = ["core"]
+
+# Split into two crates deliberately (see README.md's "Why two crates"):
+# `core` has no GUI/windowing dependency at all and is what's actually
+# tested/buildable in a sandboxed CI environment without system webview
+# libraries installed; `src-tauri` is the real Tauri application shell that
+# depends on it, and additionally requires a native webview toolkit
+# (webkit2gtk + friends on Linux) to compile/link, per Tauri's own
+# requirements — see README.md's "Build status in this environment" section
+# for what could and couldn't be verified here.

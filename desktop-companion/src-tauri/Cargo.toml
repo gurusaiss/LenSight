@@ -1,0 +1,26 @@
+[package]
+name = "lensight-companion"
+version = "0.1.0"
+edition = "2021"
+description = "Tauri shell for the Lensight desktop companion. Requires a native webview toolkit (webkit2gtk + friends on Linux) to build — see the workspace README's \"Build status in this environment\" section for what could and couldn't be verified without it."
+publish = false
+
+# Needed by tauri's own build-time resource/icon generation.
+build = "build.rs"
+
+[lib]
+# Standard Tauri mobile/desktop convention: a cdylib/staticlib for future
+# mobile targets plus a normal rlib so `main.rs` can link against it.
+name = "lensight_companion_lib"
+crate-type = ["staticlib", "cdylib", "rlib"]
+
+[dependencies]
+lensight-companion-core = { path = "../core" }
+tauri = { version = "2", features = [] }
+tauri-plugin-dialog = "2"
+tokio = { version = "1", features = ["rt-multi-thread", "macros"] }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+
+[build-dependencies]
+tauri-build = { version = "2", features = [] }

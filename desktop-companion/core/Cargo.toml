@@ -1,0 +1,17 @@
+[package]
+name = "lensight-companion-core"
+version = "0.1.0"
+edition = "2021"
+description = "Local HTTP API + Ollama daemon lifecycle logic for the Lensight desktop companion — no GUI/windowing dependency, buildable and testable on its own."
+publish = false
+
+[dependencies]
+axum = { version = "0.7", default-features = false, features = ["json", "tokio", "http1"] }
+tokio = { version = "1", features = ["rt-multi-thread", "macros", "net", "time", "process"] }
+reqwest = { version = "0.12", default-features = false, features = ["json", "rustls-tls"] }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+
+[dev-dependencies]
+tokio = { version = "1", features = ["rt-multi-thread", "macros", "net", "time", "process", "test-util"] }
+tower = { version = "0.4", features = ["util"] }

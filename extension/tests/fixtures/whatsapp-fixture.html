@@ -1,0 +1,47 @@
+<!doctype html>
+<!--
+  Realistic-shape fixture modeling documented WhatsApp Web DOM conventions:
+  row-based message list with [data-id], .message-in/.message-out for
+  direction, .copyable-text[data-pre-plain-text] carrying "[time] Sender: ",
+  and .selectable-text for the body. See src/core/adapters/whatsappAdapter.ts
+  for the honest caveat that real WhatsApp Web markup can and does differ.
+-->
+<html>
+<head><title>WhatsApp</title></head>
+<body>
+  <div id="app">
+    <header>
+      <div data-testid="conversation-info-header">
+        <span title="Alice Example">Alice Example</span>
+      </div>
+    </header>
+    <div id="main">
+      <div data-testid="conversation-panel-messages" class="copyable-area">
+
+        <div class="message-in" data-id="true_1234567890@c.us_ABCDEF1">
+          <div class="copyable-text" data-pre-plain-text="[10:01, 1/5/2024] Alice Example: ">
+            <span class="selectable-text"><span>Hey, are we still on for tomorrow?</span></span>
+          </div>
+        </div>
+
+        <div class="message-out" data-id="true_1234567890@c.us_ABCDEF2">
+          <div class="copyable-text" data-pre-plain-text="[10:02, 1/5/2024] You: ">
+            <span class="selectable-text"><span>Yes! 3pm works, see https://maps.example.com/place for the address.</span></span>
+          </div>
+        </div>
+
+        <div class="message-in" data-id="true_1234567890@c.us_ABCDEF3">
+          <div data-testid="media-image" class="media-message"></div>
+        </div>
+
+        <div class="message-in" data-id="true_1234567890@c.us_ABCDEF4">
+          <div class="copyable-text" data-pre-plain-text="[10:05, 1/5/2024] Alice Example: ">
+            <span class="selectable-text"><span>Great, see you on Jan 6th then!</span></span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</body>
+</html>
